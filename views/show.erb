@@ -1,0 +1,22 @@
+<div id="repos">
+  <h1>
+    Repositories for <%= @user.name %> 
+    <small>
+      <a href="#show">Show All</a> or <a href="#hide">Hide All</a>
+    </small>
+  </h1>
+
+  <% @user.repos.each_with_index do |repo, i| %>
+    <div class="repo" id="repo-<%= i %>">
+      <a href="#hide-<%= i %>" class="toggle">Toggle</a>
+      <div>
+        <h3><a class="link" href="<%= repo.url %>"><%= repo.name %></a></h3>
+        <span><%= repo.description %></span>
+      </div>
+      <dl class="meta">
+        <dt>Watchers</dt>
+        <dd><%= repo.watchers %></dd>
+      </dl>
+    </div>
+  <% end %> 
+</div>

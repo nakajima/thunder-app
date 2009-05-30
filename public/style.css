@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: Helvetica, sans-serif;
+  font-size: 18px;
+}
+
+body {
+  padding: 0.4em;
+}
+
+h1 {
+  margin: 0.2em;
+}
+
+h1 small {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+h1 small a {
+  text-decoration: none;
+}
+
+.repo {
+  display: inline-block;
+  width: 300px;
+  list-style: none;
+  border: 1px solid #ddd;
+  margin-bottom: 0.4em;
+  margin-left: 0.4em;
+  cursor: pointer;
+}
+
+.repo.faded {
+  opacity: 0.2;
+  -moz-opacity: 0.2;
+  filter:alpha(opacity=20);
+}
+
+.repo .toggle {
+  float: right;
+  margin: 0.5em;
+  font-size: 12px;
+}
+
+.repo h3 {
+  margin-bottom: 0.2em;
+}
+
+.repo h3 a {
+  color: #00f;
+  text-decoration: none;
+}
+
+.repo div {
+  padding: 0.4em;
+}
+
+.repo strong {
+  text-align: right;
+  display: inline-block;
+  margin-right: 0.4em;
+}
+
+.repo .meta {
+  font-size: 0.8em;
+  margin-top: 0.2em;
+  padding: 0.3em 0.6em;
+  background: #eee;
+  text-align: right;
+}
+
+.repo .meta dt,
+.repo .meta dd {
+  display: inline;
+}
+
+.repo .meta dt {
+  color: #777;
+}
+
+.repo .meta dt:after {
+  content: ': ';
+}
+
+.repo .meta dd {
+  color: #111;
+}
