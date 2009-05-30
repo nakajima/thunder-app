@@ -2,33 +2,51 @@
   body {
     font-size: 30px;
     text-align: center;
+    color: #222;
   }
-  
+
   #the-form {
-    width: 800px;
+    width: 900px;
     text-align: left;
     margin: 15% auto 0;
   }
-  
+
   form {
     margin-left: 15px;
     margin-top: 1em;
   }
-  
+
   input {
     font-size: 30px;
+  }
+
+  h1 {
+    letter-spacing: 6px;
+  }
+
+  h1 small {
+    font-size: 18px;
   }
 </style>
 
 <div id="the-form">
-  <h1>Thunder</h1>
+  <h1>
+    Thunder <small>Before Lightning (talks) comes thunder.</small>
+  </h1>
+
+  <% if flash.has?(:error) %>
+    <div class="flash error">
+      Oops!
+      <strong>&ldquo;<%= flash[:error] %>&rdquo;</strong> isn't on the GitHub. 
+      Sure you spelled it right?
+    </div>
+  <% end %>
 
   <form action="/user">
     <label>
-      Enter a username: 
+      Enter your GitHub username:
       <input name="username" type="text">
     </label>
     <input type="submit" value="Lightning!">
   </form>
 </div>
-

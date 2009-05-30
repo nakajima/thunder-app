@@ -18,7 +18,13 @@
   }
 
   function halt() {
-    return $(event.target).is('.link') ? confirm('Sure?') : false;
+    var elem = $(event.target);
+    if (elem.is('.link')) {
+      var href = elem.attr('href');
+      return confirm('Go to ' + href + '?');
+    } else {
+      return false;
+    }
   }
 
   function showAll() {

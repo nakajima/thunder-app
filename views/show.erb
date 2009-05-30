@@ -8,7 +8,7 @@
   
   <h2 id="winner" style="display:none"></h2>
 
-  <% @user.repos.each_with_index do |repo, i| %>
+  <% @repos.each_with_index do |repo, i| %>
     <div class="repo" id="repo-<%= i %>">
       <div>
         <h3><a class="link" href="<%= repo.url %>"><%= repo.name %></a></h3>
@@ -19,5 +19,11 @@
         <dd><%= repo.watchers %></dd>
       </dl>
     </div>
-  <% end %> 
+  <% end %>
+  
+  <% if @repos.empty? %>
+    <p class="no-repos">
+      <%= @user.name %> doesn't have any repositories.
+    </p>
+  <% end %>
 </div>

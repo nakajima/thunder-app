@@ -26,6 +26,17 @@ h1 small a {
   text-decoration: none;
 }
 
+.no-repos {
+  padding: 0.7em;
+}
+
+.flash {
+  padding: 0.3em 0.7em;
+  text-align: center;
+  background: #fda;
+  border: 1px solid #f71;
+}
+
 #winner {
   background: #ffd;
   padding: 0.6em;
