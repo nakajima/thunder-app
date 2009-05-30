@@ -2,6 +2,8 @@ require 'sinatra/base'
 require 'open-uri'
 require File.join(File.dirname(__FILE__), *%w[lib user])
 
+class ThrottledError < StandardError ; end
+
 class Thunder < Sinatra::Default
   set :root, File.dirname(__FILE__)
   set :static, true
@@ -17,7 +19,11 @@ class Thunder < Sinatra::Default
 
   get '/~:username' do
     @user = User.get(params[:username])
-    @repos = @user.repos(params[:sort] || 'watchers')
-    erb :show
+    begin
+      @repos = @user.repos(params[:sort] || 'watchers')
+      erb :show
+    rescue ThrottledError
+      erb :throttled
+    end
   end
 end

@@ -6,6 +6,7 @@
 html, body {
   font-family: Helvetica, sans-serif;
   font-size: 18px;
+  color: #222;
 }
 
 body {
@@ -25,6 +26,13 @@ h1 small a {
   text-decoration: none;
 }
 
+#winner {
+  background: #ffd;
+  padding: 0.6em;
+  border: 1px solid #fca;
+  margin-bottom: 0.6em;
+}
+
 .repo {
   display: inline-block;
   width: 300px;
@@ -33,6 +41,10 @@ h1 small a {
   margin-bottom: 0.4em;
   margin-left: 0.4em;
   cursor: pointer;
+}
+
+.repo.winner {
+  background: #ffc;
 }
 
 .repo.faded {
