@@ -9,6 +9,9 @@
   </h1>
   
   <h2 id="winner" style="display:none"></h2>
+  <h2 id="loser" style="display:none">
+    So you've got nothing to talk about. Better luck next time!
+  </h2>
 
   <% @repos.each_with_index do |repo, i| %>
     <div class="repo" id="repo-<%= i %>">

@@ -37,11 +37,12 @@ h1 small a {
   border: 1px solid #f71;
 }
 
-#winner {
+#winner, #loser {
   background: #ffd;
   padding: 0.6em;
   border: 1px solid #fca;
   margin-bottom: 0.6em;
+  font-weight: normal;
 }
 
 .repo {

@@ -42,7 +42,7 @@ class Thunder < Sinatra::Default
     rescue ThrottledError
       erb :throttled
     rescue Exception => err
-      err.message.include?('syntax') ? check_user(@user) : raise
+      check_user(@user)
     end
   end
 end

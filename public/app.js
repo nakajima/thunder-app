@@ -2,19 +2,28 @@
   function finish() {
     var winner = $('.repo:not(.faded)')
     winner.addClass('winner');
-    $('#winner').show().text(winner.find('h3').text() + ' is the winner!');
+    $('#winner').show().text(winner.find('h3').text() + ' is what you should talk about!');
+    $('#loser').hide();
+  }
+  
+  function fail() {
+    $('#loser').show();
   }
   
   function toggle(event) {
     if ($(event.target).is('.link')) { return; }
     $(this).toggleClass('faded');
-    if ($('.repo:not(.faded)').size() == 1) {
-      finish();
-    } else {
-      $('.winner').removeClass('winner');
-      $('#winner').hide().text('');
-    }
+    showMessages();
     return halt(event);
+  }
+  
+  function showMessages() {
+    var remaining = $('.repo:not(.faded)').size()
+    if (remaining == 1) { return finish(); }
+    $('.winner').removeClass('winner');
+    $('#winner').hide().text('');
+    if (remaining == 0) { return fail(); }
+    $('#loser').hide();
   }
 
   function halt() {
@@ -29,11 +38,13 @@
 
   function showAll() {
     $('.repo').removeClass('faded');
+    showMessages();
     return false;
   }
 
   function hideAll() {
     $('.repo').addClass('faded');
+    showMessages();
     return false;
   }
 

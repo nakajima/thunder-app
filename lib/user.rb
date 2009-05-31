@@ -27,7 +27,7 @@ class User
 
   def repos(sort='watchers')
     @repos ||= begin
-      YAML.load(load_data).fetch('repositories') \
+       load_data \
         .map     { |repo| OpenStruct.new(repo)  } \
         .reject  { |repo| repo.fork } \
         .sort_by { |repo| repo.send(sort) }.reverse
@@ -38,13 +38,14 @@ class User
 
   def load_data
     begin
-      open("http://github.com/api/v2/yaml/repos/show/#{@username}").read
+      data = open("http://github.com/api/v2/yaml/repos/show/#{@username}").read
+      YAML.load(data).fetch('repositories')
     rescue => err
       if throttled?(err)
         User.cache.delete(@username)
         raise(ThrottledError.new)
       else
-        [].to_yaml
+        raise
       end
     end
   end
