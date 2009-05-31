@@ -44,7 +44,7 @@ class User
         User.cache.delete(@username)
         raise(ThrottledError.new)
       else
-        raise
+        [].to_yaml
       end
     end
   end
