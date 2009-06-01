@@ -9,7 +9,7 @@ class User
   end
   
   def self.cache
-    @cache ||= MemCache.new("127.0.0.1:11211")
+    @cache ||= MemCache.respond_to?(:cache) ? MemCache.cache : MemCache.new("127.0.0.1:11211")
   end
   
   def self.get(username)
