@@ -7,6 +7,7 @@ require 'rack-flash'
 require 'activerecord'
 require 'delayed_job'
 require 'memcache'
+require 'logger'
 require File.join(File.dirname(__FILE__), *%w[lib user])
 
 class ThrottledError < StandardError ; end
