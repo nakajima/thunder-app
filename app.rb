@@ -1,7 +1,12 @@
+$:.unshift *Dir[File.dirname(__FILE__) + "/vendor/*/lib"]
+
 require 'sinatra/base'
 require 'open-uri'
 require 'net/http'
 require 'rack-flash'
+require 'activerecord'
+require 'delayed_job'
+require 'memcache'
 require File.join(File.dirname(__FILE__), *%w[lib user])
 
 class ThrottledError < StandardError ; end
@@ -13,11 +18,21 @@ class Thunder < Sinatra::Default
   enable :sessions
 
   use Rack::Flash
-  
+
+  configure do
+    config = YAML::load(File.open('config/database.yml'))
+    environment = Sinatra::Application.environment.to_s
+    ActiveRecord::Base.logger = Logger.new($stdout)
+    ActiveRecord::Base.establish_connection(
+      config[environment]
+    )
+  end
+
   helpers do
     def check_user(user)
       if user.exists?
-        erb :show
+        @repos = user.repos
+        @repos ? erb(:show) : erb(:loading)
       else
         flash[:error] = params[:username]
         redirect '/'
@@ -35,6 +50,8 @@ class Thunder < Sinatra::Default
 
   get '/~:username' do
     @user = User.get(params[:username])
+
+    return erb(:loading) unless @user.loaded?
 
     begin
       @repos = @user.repos(params[:sort] || 'watchers')

@@ -1,0 +1,20 @@
+<style type="text/css" media="screen">
+  body {
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  a {
+    color: #00f;
+    text-decoration: none;
+    font-size: 20px;
+  }
+  
+  h2 {
+    margin: 1em auto;
+  }
+</style>
+
+<h2>Loading <%= params[:username] %>&rsquo;s repositories<span class="progress"></span></h2>
+
+<p><a href="/~<%= params[:username] %>">Refresh anytime.</a></p>

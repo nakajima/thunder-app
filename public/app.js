@@ -53,5 +53,6 @@
     $('.repo').live('click', halt);
     $('a[href="#show"]').live('click', showAll);
     $('a[href="#hide"]').live('click', hideAll);
+    $('.progress').progress();
   });
 })(jQuery);

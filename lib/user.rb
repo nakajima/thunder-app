@@ -2,16 +2,33 @@ require 'yaml'
 require 'ostruct'
 
 class User
-  def self.cache
-    @cache ||= {}
+  EXPIRY = 3600
+  
+  def self.api
+    @api ||= Class.new { def self.get(uri); open(uri).read end }
   end
-
+  
+  def self.cache
+    @cache ||= MemCache.new("127.0.0.1:11211")
+  end
+  
   def self.get(username)
-    cache[username] ||= new(username)
+    new(username)
   end
 
   def initialize(username)
     @username = username
+    Delayed::Job.enqueue self unless loaded?
+  end
+  
+  def perform
+    load_data unless loaded?
+  end
+
+  def loaded?
+    if result = User.cache.get(@username)
+      puts "[cache.hit] - #{@username}" ; result
+    end
   end
 
   def exists?
@@ -27,7 +44,7 @@ class User
 
   def repos(sort='watchers')
     @repos ||= begin
-       load_data \
+       yaml \
         .map     { |repo| OpenStruct.new(repo)  } \
         .reject  { |repo| repo.fork } \
         .sort_by { |repo| repo.send(sort) }.reverse
@@ -36,10 +53,16 @@ class User
 
   private
 
+  def yaml
+    YAML.load(User.cache.get(@username))['repositories']
+  end
+
   def load_data
     begin
-      data = open("http://github.com/api/v2/yaml/repos/show/#{@username}").read
-      YAML.load(data).fetch('repositories')
+      puts "** Fetching repo data for #{@username}"
+      data = User.api.get("http://github.com/api/v2/yaml/repos/show/#{@username}")
+      puts "** Setting repo cache data for #{@username}:"
+      User.cache.set(@username, data, EXPIRY)
     rescue => err
       if throttled?(err)
         User.cache.delete(@username)
