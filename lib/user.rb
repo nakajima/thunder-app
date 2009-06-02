@@ -4,12 +4,17 @@ require 'ostruct'
 class User
   EXPIRY = 3600
 
+  attr_reader :username
+  alias_method :name, :username
+
   def self.api
     @api ||= Class.new { def self.get(uri); open(uri).read end }
   end
 
   def self.cache
-    @cache ||= ENV['RACK_ENV'] == 'production' ? MemCache.cache : MemCache.new("127.0.0.1:11211")
+    @cache ||= ENV['RACK_ENV'] == 'production' ?
+      MemCache.cache :
+      MemCache.new("127.0.0.1:11211")
   end
 
   def self.get(username)
@@ -18,9 +23,7 @@ class User
 
   def initialize(username)
     @username = username
-    unless loaded?
-      enqueue! unless pending?
-    end
+    enqueue! unless loaded? or pending?
   end
 
   def perform
@@ -28,50 +31,49 @@ class User
   end
 
   def pending?
-    not loaded? and yaml == 'pending'
+    not loaded? and cached
   end
 
   def loaded?
-    if result = User.cache.get(@username)
-      yaml.has_key?('repositories')
+    if cached
+      yaml.has_key?('repositories') or yaml.has_key?('unknown')
     end
+  end
+
+  def cached
+    User.cache.get(@username)
   end
 
   def exists?
-    uri = URI.parse("http://github.com/#{@username}")
-    req = Net::HTTP::Head.new(uri.path)
-    res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
-    ! res['status'].include? "404"
+    @exists ||= begin
+      uri = URI.parse("http://github.com/#{@username}")
+      req = Net::HTTP::Head.new(uri.path)
+      res = Net::HTTP.start(uri.host, uri.port) {|http| http.request(req) }
+      res.code.to_i != 404
+    end
   end
 
-  def name
-    @username
-  end
-
-  def repos(sort='watchers')
+  def repos
     @repos ||= begin
        yaml['repositories'] \
         .map     { |repo| OpenStruct.new(repo)  } \
-        .reject  { |repo| repo.fork } \
-        .sort_by { |repo| repo.send(sort) }.reverse
+        .reject  { |repo| repo.fork }
     end
   end
-  
+
   def enqueue!
-    Delayed::Job.enqueue(self)
-    User.cache.set(@username, { :pending => true }.to_yaml, 60)
+    if exists?
+      Delayed::Job.enqueue(self)
+      User.cache.set(@username, { :pending => true }.to_yaml, 60)
+    else
+      User.cache.set(@username, { 'unknown' => true }.to_yaml, EXPIRY)
+    end
   end
 
   private
-  
+
   def yaml
-    @yaml ||= begin
-      if data = User.cache.get(@username)
-        YAML.load(data)
-      else
-        {}
-      end
-    end
+    @yaml ||= cached ? YAML.load(cached) : {}
   end
 
   def load_data
@@ -84,8 +86,6 @@ class User
       if throttled?(err)
         User.cache.delete(@username)
         raise(ThrottledError.new)
-      else
-        raise
       end
     end
   end

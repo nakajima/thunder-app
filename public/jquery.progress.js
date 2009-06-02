@@ -1,10 +1,11 @@
 (function($) {
-  var PROGRESS_ELEMS = [];
+  var elems = [];
 
   function pinger(i, elem) {
-    elem = $(elem);
+    var elem = $(this);
     var opts = elem.data('progress-options');
-    opts.dot = '.';
+
+    opts.dot = opts.dot || '.';
     opts.size |= 3;
     opts.start = opts.start || opts.dot;
 
@@ -20,14 +21,16 @@
   }
 
   function run() {
-    for (i in PROGRESS_ELEMS) { PROGRESS_ELEMS[i].each(pinger) }
+    for (i in elems) { elems[i].each(pinger) }
     window.setTimeout(run, 400);
   }
 
   $.fn.progress = function progress(options) {
-    $(this).css({ position: 'absolute' }).data('progress-options', (options || {}))
-    PROGRESS_ELEMS.push(this);
-    return this;
+    var elem = $(this);
+    elems.push(elem);
+    elem.css({ position: 'absolute' });
+    elem.data('progress-options', (options || {}));
+    return elem;
   }
 
   run();

@@ -42,20 +42,26 @@ class Thunder < Sinatra::Default
   end
 
   get '/' do
+    status(404) if flash.has?(:error)
     erb :index
   end
 
   get '/user' do
+    if params[:username].empty?
+      flash[:invalid] = "invalid"
+      redirect '/'
+    end
+    
     redirect "/~#{params[:username]}"
   end
 
-  get '/~:username' do
+  get '/~:username?' do
     @user = User.get(params[:username])
 
     return erb(:loading) unless @user.loaded?
 
     begin
-      @repos = @user.repos(params[:sort] || 'watchers')
+      @repos = @user.repos
       erb(:show)
     rescue ThrottledError
       erb :throttled
