@@ -37,6 +37,15 @@ h1 small a {
   border: 1px solid #f71;
 }
 
+#search {
+  padding: 0.3em 0.5em;
+  margin-bottom: 0.5em;
+}
+
+#search input {
+  font-size: 18px;
+}
+
 #winner, #loser {
   background: #ffd;
   padding: 0.6em;

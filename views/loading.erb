@@ -18,3 +18,28 @@
 <h2>Loading <%= params[:username] %>&rsquo;s repositories<span class="progress"></span></h2>
 
 <p><a href="/~<%= params[:username] %>">Refresh anytime.</a></p>
+
+<script type="text/javascript" charset="utf-8">
+  (function($) {
+    var timer;
+    
+    function ping() {
+      timer && window.clearTimeout(timer);
+      $.ajax({
+        url: '/ping' + document.location.pathname,
+        success: handle
+      });
+    }
+    
+    function handle(data) {
+      if (data) {
+        timer && window.clearTimeout(timer);
+        document.location.pathname = data;
+      } else {
+        timer = window.setTimeout(ping, 1000);
+      }
+    }
+    
+    handle();
+  })(jQuery);
+</script>

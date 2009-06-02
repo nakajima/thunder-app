@@ -30,6 +30,7 @@
     }
 
     $(this).live('keypress', perform);
+    $(this).live('keyup', perform);
     $(this).live('keydown', perform);
     $(this).bind('blur', perform);
   }

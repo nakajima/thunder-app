@@ -59,11 +59,18 @@
     $('input[name="q"]').search('.repo', function(on) {
       on.reset(function() {
         $('.repo').show();
+        showMessages();
+      });
+      
+      on.empty(function() {
+        $('.repo').hide();
+        showMessages();
       });
 
       on.results(function(results) {
         $('.repo').hide();
         results.show();
+        showMessages();
       });
     });
 

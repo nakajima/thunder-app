@@ -6,7 +6,7 @@ require 'net/http'
 require 'rack-flash'
 require 'activerecord'
 require 'delayed_job'
-require 'memcache'
+require 'typhoeus'
 require 'logger'
 require File.join(File.dirname(__FILE__), *%w[lib user])
 
@@ -51,8 +51,13 @@ class Thunder < Sinatra::Default
       flash[:invalid] = "invalid"
       redirect '/'
     end
-    
+
     redirect "/~#{params[:username]}"
+  end
+
+  get '/ping/~:username' do
+    @user = User.get(params[:username])
+    @user.loaded? ? "/~#{@user.name}" : ''
   end
 
   get '/~:username?' do
