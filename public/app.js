@@ -58,7 +58,7 @@
 
     $('input[name="q"]').search('.repo', function(on) {
       on.reset(function() {
-        $('.repo').show();
+        $('.repo').show().removeClass('faded');
         showMessages();
       });
       
