@@ -21,7 +21,7 @@ class Thunder < Sinatra::Default
   use Rack::Flash
 
   configure do
-    config = YAML::load(File.open('config/database.yml'))
+    config = YAML::load_file('config/database.yml')
     environment = Sinatra::Application.environment.to_s
     ActiveRecord::Base.logger = Logger.new($stdout)
     ActiveRecord::Base.establish_connection(
