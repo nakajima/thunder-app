@@ -62,6 +62,7 @@ class Thunder < Sinatra::Default
 
   get '/~:username?' do
     @user = User.get(params[:username])
+    @user.refresh!
 
     return erb(:loading) unless @user.loaded?
 

@@ -22,6 +22,10 @@ class User < ActiveRecord::Base
     end
   end
   
+  def refresh!
+    perform unless fresh?
+  end
+  
   def fresh?
     expires_in > 0
   end
